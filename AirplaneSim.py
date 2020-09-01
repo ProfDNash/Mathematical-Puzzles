@@ -5,6 +5,14 @@ SIMULATE THE FAMOUS AIRPLANE SEAT PROBLEM
 @initial date: 9/1/2020
 """
 import numpy as np
+import matplotlib.pyplot as plt
+
+def calcProp(counter,t):
+    ##A function to calculate the running proportion of cases
+    if t==0:
+        return 0
+    else:
+        return np.sum(counter[:t])/t
 
 def fillPlane():
     passengers = np.arange(100)
@@ -23,10 +31,10 @@ def fillPlane():
             seats[0,pickedSeat]=1
     ##check to see if the last passenger can sit in their own seat
     if seats[0,passengers[99]]==0:
-        print('Seat available!')
+        #print('Seat available!')
         return 1
     else:
-        print('Seat taken!')
+        #print('Seat taken!')
         return 0
     
     
