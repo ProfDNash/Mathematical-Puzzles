@@ -36,6 +36,26 @@ def fillPlane():
     else:
         #print('Seat taken!')
         return 0
+
+def runTrials(n):
+    ##keep track of the results over n trials and visualize them
+    counter = np.zeros(n)
+    countProp = np.zeros(n)
+    for r in range(n):
+        counter[r] = fillPlane()
+        countProp[r] = calcProp(counter,r+1)
+    print('Over ' + str(n) + ' trials, the proportion of times the final passenger could sit in their own seat was ', countProp[n-1])
+    print('See plot for the running proportion over time.')
+    
+    fig, ax = plt.subplots()
+    ax.plot(np.arange(n),countProp)
+    ax.set_ylim(0,1)
+    ax.set_yticks([0,0.25,0.5,0.75,1])
+    ax.set_title('PROPORTION OF TRIALS IN WHICH THE FINAL SEAT WAS THE CORRECT ONE')
+    ax.set_xlabel('Number of Trials')
+    ax.set_ylabel('Propoportion')
+    plt.show()
+        
     
     
     
