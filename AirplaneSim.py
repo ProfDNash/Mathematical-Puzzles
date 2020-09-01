@@ -1,50 +1,33 @@
 """
-NEURAL NETWORK UTILITIES
-
-Helper functions designed to:
-(1) randomly initialize (non-zero) weights (given number of incoming and outgoing connections)
-(2) Apply vectorized sigmoid function
-(3) Apply vectorized ReLU function
-(4) Calculate softmax of a vector (thus, all output entries will be between 0 and 1 and will sum to 1)
+SIMULATE THE FAMOUS AIRPLANE SEAT PROBLEM
 
 @author: David A. Nash
+@initial date: 9/1/2020
 """
 import numpy as np
 
-##Randomly Initialize Weights for a given layer with L_in input connections and L_out output ones##
-def randInitWeights(layer_dims, pos):
-    ''' 
-    input: layer_dims -- a numpy array (list) containing the dimensions of the layers in our NN
-            pos -- a flag of whether to require the weights to be non-negative or not
+def fillPlane():
+    passengers = np.arange(100)
+    np.random.shuffle(passengers) ##put the passengers in a random order
+    seats = np.zeros((1,100)) ##each passenger number corresponds to their assigned seat
+    ##place the first passenger randomly regardless of their assigned seat
+    firstSeat = np.random.randint(0,100)
+    seats[0,firstSeat] = 1  ##1 means the seat is filled, 0 means it is empty
+    for p in range(1,99):
+        pickedSeat = passengers[p]
+        if seats[0,pickedSeat]==0: ##if assigned seat is empty, take it
+            seats[0,pickedSeat]=1
+        else:  ##pick a new seat randomly
+            while seats[0,pickedSeat]==1:
+                pickedSeat = np.random.randint(0,100)
+            seats[0,pickedSeat]=1
+    ##check to see if the last passenger can sit in their own seat
+    if seats[0,passengers[99]]==0:
+        print('Seat available!')
+        return 1
+    else:
+        print('Seat taken!')
+        return 0
     
-    output: parameters -- a dictionary containing the randomized weights for each layer 'W1', 'b1', etc.
-    '''
-    parameters = {} ##initialize empty dictionary
-    L = len(layer_dims)  ##number of layers (including the input layer)
-    epsilon_init=0.001
     
-    for l in range(1,L):
-        parameters['W'+str(l)] = np.random.randn(layer_dims[l],layer_dims[l-1])*2*epsilon_init
-        if pos == True: parameters['W'+str(l)] += 4*epsilon_init
-        parameters['b'+str(l)] = np.zeros((layer_dims[l],1))
     
-    return parameters
-
-##Vectorized Sigmoid Function##
-def sigmoid(z):
-    return 1 / (1 + np.exp(- z))
-
-##Vectorized ReLU Function##
-def relu(z):
-    return np.maximum(0,z)
-
-##Vectorized Leaky ReLU Function##
-def leaky(z):
-    return np.maximum(0.1*z,z)
-
-##Softmax Function##
-def softmax(X):
-    '''Take vector X and return numerically stable softmax'''
-    e_x = np.exp(X - np.max(X))
-    X = e_x/np.sum(e_x)
-    return X
